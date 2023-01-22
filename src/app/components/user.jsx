@@ -1,45 +1,44 @@
 import React from "react";
-import Qualitie from "./qualities";
+import Qualitie from "./qualitie";
 import BookMark from "./bookmark";
-
-const User = (props) => {
+const User = ({
+    _id,
+    name,
+    qualities,
+    profession,
+    completedMeetings,
+    rate,
+    onDelete,
+    bookmark,
+    onToggleBookMark,
+}) => {
     return (
-        <>
-        <tr key={props._id}>
-            <td>{props.name}</td>
+        <tr>
+            <td>{name}</td>
             <td>
-                {props.qualities.map((item) => (
-                    <Qualitie  
-                        color={item.color}
-                        name={item.name}
-                        _id={item._id}
-                    />                    
+                {qualities.map((qual) => (
+                    <Qualitie key={qual._id} {...qual} />
                 ))}
             </td>
-            <td>{props.profession}</td>
-            <td>{props.completedMeetings}</td>
-            <td>{props.rate} /5</td>
+            <td>{profession.name}</td>
+            <td>{completedMeetings}</td>
+            <td>{rate} /5</td>
             <td>
-                <button 
-                    className="btn btn-outline-dark"
-                    onClick={() => props.onToggBookMark(props._id)}
-                > 
-                    <BookMark                     
-                        status={props.bookmark}                                                                                   
-                    />    
-                </button>            
+                <BookMark
+                    status={bookmark}
+                    onClick={() => onToggleBookMark(_id)}
+                />
             </td>
             <td>
                 <button
-                    onClick={() => props.onDelete(props._id)}
+                    onClick={() => onDelete(_id)}
                     className="btn btn-danger"
                 >
                     delete
                 </button>
-            </td>            
+            </td>
         </tr>
-        </>
-    )
+    );
 };
 
 export default User;

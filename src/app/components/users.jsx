@@ -1,6 +1,5 @@
 import React from "react";
 import User from "./user";
-
 const Users = ({ users, ...rest }) => {
     return (
         <>
@@ -19,23 +18,13 @@ const Users = ({ users, ...rest }) => {
                     </thead>
                     <tbody>
                         {users.map((user) => (
-                            <User 
-                                _id={user._id}
-                                name={user.name}
-                                qualities={user.qualities}
-                                profession={user.profession.name}
-                                completedMeetings={user.completedMeetings}
-                                rate={user.rate}
-                                bookmark={user.bookmark}   
-                                onToggBookMark={()=>rest.onToggBookMark(user._id)}                             
-                                onDelete={rest.onDelete}                                                                
-                            />                       
+                            <User key={user._id} {...rest} {...user} />
                         ))}
                     </tbody>
                 </table>
             )}
         </>
     );
-}
+};
 
 export default Users;
