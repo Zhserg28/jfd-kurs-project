@@ -7,6 +7,9 @@ import GroupList from "./groupList";
 import SearchStatus from "./searchStatus";
 import UserTable from "./usersTable";
 import _ from "lodash";
+import { useParams } from "react-router-dom";
+import UserPage from "./userPage";
+
 const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfession] = useState();
@@ -50,6 +53,9 @@ const Users = () => {
         setSortBy(item);
     };
 
+    const params = useParams();
+    const { userId } = params;
+
     if (users) {
         const filteredUsers = selectedProf
             ? users.filter(
@@ -60,13 +66,21 @@ const Users = () => {
             : users;
 
         const count = filteredUsers.length;
-        const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+        const sortedUsers = _.orderBy(
+            filteredUsers,
+            [sortBy.path],
+            [sortBy.order]
+        );
         const usersCrop = paginate(sortedUsers, currentPage, pageSize);
         const clearFilter = () => {
             setSelectedProf();
         };
 
         return (
+            <>
+            {(userId)
+            ? (<UserPage id={userId} />)
+            : (
             <div className="d-flex">
                 {professions && (
                     <div className="d-flex flex-column flex-shrink-0 p-3">
@@ -105,6 +119,8 @@ const Users = () => {
                     </div>
                 </div>
             </div>
+            )}
+        </>
         );
     }
     return "loading...";
