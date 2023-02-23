@@ -7,10 +7,7 @@ import GroupList from "./groupList";
 import SearchStatus from "./searchStatus";
 import UserTable from "./usersTable";
 import _ from "lodash";
-import { useParams } from "react-router-dom";
-import UserPage from "./userPage";
-
-const Users = () => {
+const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfession] = useState();
     const [selectedProf, setSelectedProf] = useState();
@@ -53,9 +50,6 @@ const Users = () => {
         setSortBy(item);
     };
 
-    const params = useParams();
-    const { userId } = params;
-
     if (users) {
         const filteredUsers = selectedProf
             ? users.filter(
@@ -77,10 +71,6 @@ const Users = () => {
         };
 
         return (
-            <>
-            {(userId)
-            ? (<UserPage id={userId} />)
-            : (
             <div className="d-flex">
                 {professions && (
                     <div className="d-flex flex-column flex-shrink-0 p-3">
@@ -94,7 +84,7 @@ const Users = () => {
                             onClick={clearFilter}
                         >
                             {" "}
-                            Очистить
+                            Очиститть
                         </button>
                     </div>
                 )}
@@ -119,14 +109,12 @@ const Users = () => {
                     </div>
                 </div>
             </div>
-            )}
-        </>
         );
     }
     return "loading...";
 };
-Users.propTypes = {
+UsersList.propTypes = {
     users: PropTypes.array
 };
 
-export default Users;
+export default UsersList;
