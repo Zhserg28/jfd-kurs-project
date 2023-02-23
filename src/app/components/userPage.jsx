@@ -1,43 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import api from "../api";
-import { useHistory } from "react-router-dom";
 import QualitiesList from "./qualitiesList";
+import { useHistory } from "react-router-dom";
 
-const UserPage = ({ id }) => {
-    const [currentUser, setCurrentUser] = useState();
+const UserPage = ({ userId }) => {
     const history = useHistory();
-
+    const [user, setUser] = useState();
     useEffect(() => {
-        api.users.getById(id).then((user) => setCurrentUser(user));
-    }, []);
-
-    const handleUsers = () => {
-        history.replace("/users");
+        api.users.getById(userId).then((data) => setUser(data));
+    });
+    const handleClick = () => {
+        history.push("/users");
     };
-    if (currentUser) {
+    if (user) {
         return (
-            <>
-                <h1>{currentUser.name}</h1>
-                <h2>Профессия: {currentUser.profession.name}</h2>
-                <QualitiesList qualities={currentUser.qualities} />
-                <h6>completedMeetings: {currentUser.completedMeetings}</h6>
-                <h2>Rate: {currentUser.rate}</h2>
-                <button
-                    onClick={() => {
-                        handleUsers();
-                    }}
-                >
-                    Все Пользователи
-                </button>
-            </>
+            <div>
+                <h1> {user.name}</h1>
+                <h2>Профессия: {user.profession.name}</h2>
+                <QualitiesList qualities={user.qualities} />
+                <p>completedMeetings: {user.completedMeetings}</p>
+                <h2>Rate: {user.rate}</h2>
+                <button onClick={handleClick}> Все Пользователи</button>
+            </div>
         );
+    } else {
+        return <h1>Loading</h1>;
     }
-    return <h1>Loading</h1>;
 };
 
 UserPage.propTypes = {
-    id: PropTypes.string.isRequired
+    userId: PropTypes.string.isRequired
 };
 
 export default UserPage;
