@@ -12,8 +12,8 @@ export function validator(data, config) {
                 break;
             }
             case "isCapitalSymbol": {
-                const capitalRepExp = /[A-Z]+/g;
-                statusValidate = !capitalRepExp.test(data);
+                const capitalRegExp = /[A-Z]+/g;
+                statusValidate = !capitalRegExp.test(data);
                 break;
             }
             case "isContainDigit": {

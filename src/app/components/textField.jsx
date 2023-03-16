@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-const TextField = ({ label, type, name, value, onChange, error }) => {
+function TextField({ label, type, name, value, onChange, error }) {
     const [showPassword, setShowPassword] = useState(false);
     const getInputClasses = () => {
         return "form-control" + (error ? " is-invalid" : "");
@@ -29,7 +29,7 @@ const TextField = ({ label, type, name, value, onChange, error }) => {
                     >
                         <i
                             className={
-                                "bi bi-eye" + (!showPassword ? "-slash" : "")
+                                "bi bi-eye" + (showPassword ? "-slash" : "")
                             }
                         ></i>
                     </button>
@@ -38,7 +38,7 @@ const TextField = ({ label, type, name, value, onChange, error }) => {
             </div>
         </div>
     );
-};
+}
 TextField.defaultProps = {
     type: "text"
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TextField from "../components/textField";
-import { validator } from "../utils/validator.js";
+import { validator } from "../utils/validator";
 
 const Login = () => {
     const [data, setData] = useState({ email: "", password: "" });
@@ -28,7 +28,7 @@ const Login = () => {
                 message: "Пароль должен содержать хотя бы одну заглавную букву"
             },
             isContainDigit: {
-                message: "Пароль должен содержать хотя бы одну цифру"
+                message: "Пароль должен содержать хотя бы одно число"
             },
             min: {
                 message: "Пароль должен состоять минимум из 8 символов",
@@ -74,9 +74,9 @@ const Login = () => {
                             error={errors.password}
                         />
                         <button
+                            className="btn btn-primary w-100 mx-auto"
                             type="submit"
                             disabled={!isValid}
-                            className="btn btn-primary w-100 mx-auto"
                         >
                             Submit
                         </button>
