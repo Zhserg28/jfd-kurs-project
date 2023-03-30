@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Quality from "./quality";
 
-const Qualities = ({ qualities }) => {
+const QualitiesList = ({ qualities }) => {
     return (
         <>
             {qualities.map((qual) => (
@@ -12,8 +12,8 @@ const Qualities = ({ qualities }) => {
     );
 };
 
-Qualities.propTypes = {
+QualitiesList.propTypes = {
     qualities: PropTypes.array
 };
 
-export default Qualities;
+export default QualitiesList;
