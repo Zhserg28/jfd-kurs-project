@@ -124,9 +124,20 @@ const EditUserPage = () => {
         return Object.keys(errors).length === 0;
     };
     const isValid = Object.keys(errors).length === 0;
+    const handleBackPage = () => history.push(`/users/${data._id}`);
     return (
         <div className="container mt-5">
             <div className="row">
+                <div className="col-md-4 mb-3">
+                    <button
+                        type="submit"
+                        className="btn btn-primary mx-auto"
+                        onClick={handleBackPage}
+                    >
+                        <i className="bi bi-caret-left"></i>
+                        Назад
+                    </button>
+                </div>
                 <div className="col-md-6 offset-md-3 shadow p-4">
                     {!isLoading && Object.keys(professions).length > 0 ? (
                         <form onSubmit={handleSubmit}>

@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import api from "../../../api";
-import Qualities from "../../ui/qualities";
 import { useHistory } from "react-router-dom";
+import UserCard from "./cards/userCard";
+import QualitiesCard from "./cards/qualitiesCard";
+import MeetingsCard from "./cards/meetingsCard";
+import CommentsListComponent from "./comments/commentsListComponent";
+import CommentComponents from "./comments/commentComponents";
 
 const UserPage = ({ userId }) => {
     const history = useHistory();
@@ -15,14 +19,22 @@ const UserPage = ({ userId }) => {
     };
     if (user) {
         return (
-            <div>
-                <h1> {user.name}</h1>
-                <h2>Профессия: {user.profession.name}</h2>
-                <Qualities qualities={user.qualities} />
-                <p>completedMeetings: {user.completedMeetings}</p>
-                <h2>Rate: {user.rate}</h2>
-                <button onClick={handleClick}>Изменить</button>
-            </div>
+            <>
+                <div className="col-md-4 mb-3">
+                    <UserCard
+                        name={user.name}
+                        professionName={user.profession.name}
+                        rate={user.rate}
+                        onSettings={handleClick}
+                    />
+                    <QualitiesCard qualities={user.qualities} />
+                    <MeetingsCard meetings={user.completedMeetings} />
+                </div>
+                <div className="col-md-8">
+                    <CommentsListComponent />
+                    <CommentComponents userId={userId} userName={user.name} />
+                </div>
+            </>
         );
     } else {
         return <h1>Loading</h1>;
