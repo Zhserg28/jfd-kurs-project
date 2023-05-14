@@ -6,6 +6,7 @@ import TextField from "../../common/form/textField";
 import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
+import BackHistoryButton from "../../common/backButton";
 
 const EditUserPage = () => {
     const { userId } = useParams();
@@ -127,6 +128,7 @@ const EditUserPage = () => {
     const handleBackPage = () => history.push(`/users/${data._id}`);
     return (
         <div className="container mt-5">
+            <BackHistoryButton />
             <div className="row">
                 <div className="col-md-4 mb-3">
                     <button

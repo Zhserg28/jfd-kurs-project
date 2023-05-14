@@ -1,40 +1,30 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import api from "../../../api";
-import { useHistory } from "react-router-dom";
-import UserCard from "./cards/userCard";
-import QualitiesCard from "./cards/qualitiesCard";
-import MeetingsCard from "./cards/meetingsCard";
-import CommentsListComponent from "./comments/commentsListComponent";
-import CommentComponents from "./comments/commentComponents";
+import UserCard from "../../ui/userCard";
+import QualitiesCard from "../../ui/qualitiesCard";
+import MeetingsCard from "../../ui/meetingsCard";
+import Comments from "../../ui/comments";
 
 const UserPage = ({ userId }) => {
-    const history = useHistory();
     const [user, setUser] = useState();
     useEffect(() => {
         api.users.getById(userId).then((data) => setUser(data));
     }, []);
-    const handleClick = () => {
-        history.push(history.location.pathname + "/edit");
-    };
     if (user) {
         return (
-            <>
-                <div className="col-md-4 mb-3">
-                    <UserCard
-                        name={user.name}
-                        professionName={user.profession.name}
-                        rate={user.rate}
-                        onSettings={handleClick}
-                    />
-                    <QualitiesCard qualities={user.qualities} />
-                    <MeetingsCard meetings={user.completedMeetings} />
+            <div className="container">
+                <div className="row gutters-sm">
+                    <div className="col-md-4 mb-3">
+                        <UserCard user={user} />
+                        <QualitiesCard data={user.qualities} />
+                        <MeetingsCard value={user.completedMeetings} />
+                    </div>
+                    <div className="col-md-8">
+                        <Comments />
+                    </div>
                 </div>
-                <div className="col-md-8">
-                    <CommentsListComponent />
-                    <CommentComponents userId={userId} userName={user.name} />
-                </div>
-            </>
+            </div>
         );
     } else {
         return <h1>Loading</h1>;
