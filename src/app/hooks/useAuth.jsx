@@ -3,9 +3,12 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { toast } from "react-toastify";
 import userService from "../services/user.service";
-import { setTokens } from "../services/localStorage.service";
+import localStorageService, {
+    setTokens
+} from "../services/localStorage.service";
+import { useHistory } from "react-router-dom";
 
-const httpAuth = axios.create({
+export const httpAuth = axios.create({
     baseURL: "https://identitytoolkit.googleapis.com/v1/",
     params: { key: process.env.REACT_APP_FIREBASE_KEY }
 });
@@ -16,8 +19,10 @@ export const useAuth = () => {
 };
 
 const AuthProvider = ({ children }) => {
-    const [currentUser, setUser] = useState({});
+    const [currentUser, setUser] = useState();
     const [error, setError] = useState(null);
+    const [isLoading, setLoading] = useState(true);
+    const history = useHistory();
 
     const logIn = async ({ email, password }) => {
         try {
@@ -30,6 +35,7 @@ const AuthProvider = ({ children }) => {
                 }
             );
             setTokens(data);
+            await getUserData();
         } catch (error) {
             errorCatcher(error);
             const { code, message } = error.response.data.error;
@@ -40,12 +46,30 @@ const AuthProvider = ({ children }) => {
                         throw new Error("Email или пароль введены некорректно");
                     default:
                         throw new Error(
-                            "Много попыток входа, попробуйте позднее"
+                            "Слишком много попыток входа, попробуйте позднее"
                         );
                 }
             }
         }
     };
+    function logOut() {
+        localStorageService.removeAuthData();
+        setUser(null);
+        history.push("/");
+    }
+    function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+    async function updateUserData(data) {
+        const { content } = await userService.update(data);
+        setUser(content);
+        try {
+            const { content } = await userService.update(data);
+            setUser(content);
+        } catch (error) {
+            errorCatcher(error);
+        }
+    }
     async function signUp({ email, password, ...rest }) {
         try {
             const { data } = await httpAuth.post(`accounts:signUp`, {
@@ -54,7 +78,18 @@ const AuthProvider = ({ children }) => {
                 returnSecureToken: true
             });
             setTokens(data);
-            await createUser({ _id: data.localId, email, ...rest });
+            await createUser({
+                _id: data.localId,
+                email,
+                rate: randomInt(1, 5),
+                completedMeetings: randomInt(0, 200),
+                image: `https://avatars.dicebear.com/api/avataaars/${(
+                    Math.random() + 1
+                )
+                    .toString(36)
+                    .substring(7)}.svg`,
+                ...rest
+            });
             console.log(data);
         } catch (error) {
             errorCatcher(error);
@@ -73,7 +108,8 @@ const AuthProvider = ({ children }) => {
     }
     async function createUser(data) {
         try {
-            const { content } = userService.create(data);
+            const { content } = await userService.create(data);
+            console.log(content);
             setUser(content);
         } catch (error) {
             errorCatcher(error);
@@ -83,6 +119,23 @@ const AuthProvider = ({ children }) => {
         const { message } = error.response.data;
         setError(message);
     }
+    async function getUserData() {
+        try {
+            const { content } = await userService.getCurrentUser();
+            setUser(content);
+        } catch (error) {
+            errorCatcher(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    useEffect(() => {
+        if (localStorageService.getAccessToken()) {
+            getUserData();
+        } else {
+            setLoading(false);
+        }
+    });
     useEffect(() => {
         if (error !== null) {
             toast(error);
@@ -90,8 +143,10 @@ const AuthProvider = ({ children }) => {
         }
     }, [error]);
     return (
-        <AuthContext.Provider value={{ signUp, logIn, currentUser }}>
-            {children}
+        <AuthContext.Provider
+            value={{ signUp, logIn, currentUser, logOut, updateUserData }}
+        >
+            {!isLoading ? children : "Loading..."}
         </AuthContext.Provider>
     );
 };
