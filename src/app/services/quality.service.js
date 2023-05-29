@@ -1,11 +1,10 @@
 import httpService from "./http.service";
-const qualityEndPoint = "quality/";
+const qualityEndpoint = "quality/";
 
 const qualityService = {
     fetchAll: async () => {
-        const { data } = await httpService.get(qualityEndPoint);
+        const { data } = await httpService.get(qualityEndpoint);
         return data;
     }
 };
-
 export default qualityService;
