@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
 import { toast } from "react-toastify";
+import axios from "axios";
 import userService from "../services/user.service";
 import localStorageService, {
     setTokens
@@ -10,7 +10,9 @@ import { useHistory } from "react-router-dom";
 
 export const httpAuth = axios.create({
     baseURL: "https://identitytoolkit.googleapis.com/v1/",
-    params: { key: process.env.REACT_APP_FIREBASE_KEY }
+    params: {
+        key: process.env.REACT_APP_FIREBASE_KEY
+    }
 });
 const AuthContext = React.createContext();
 
@@ -24,7 +26,7 @@ const AuthProvider = ({ children }) => {
     const [isLoading, setLoading] = useState(true);
     const history = useHistory();
 
-    const logIn = async ({ email, password }) => {
+    async function logIn({ email, password }) {
         try {
             const { data } = await httpAuth.post(
                 `accounts:signInWithPassword`,
@@ -44,14 +46,15 @@ const AuthProvider = ({ children }) => {
                 switch (message) {
                     case "INVALID_PASSWORD":
                         throw new Error("Email или пароль введены некорректно");
+
                     default:
                         throw new Error(
-                            "Слишком много попыток входа, попробуйте позднее"
+                            "Слишком много попыток входа. Попробуйте позже"
                         );
                 }
             }
         }
-    };
+    }
     function logOut() {
         localStorageService.removeAuthData();
         setUser(null);
@@ -61,8 +64,6 @@ const AuthProvider = ({ children }) => {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
     async function updateUserData(data) {
-        const { content } = await userService.update(data);
-        setUser(content);
         try {
             const { content } = await userService.update(data);
             setUser(content);
@@ -90,7 +91,6 @@ const AuthProvider = ({ children }) => {
                     .substring(7)}.svg`,
                 ...rest
             });
-            console.log(data);
         } catch (error) {
             errorCatcher(error);
             const { code, message } = error.response.data.error;
@@ -103,7 +103,6 @@ const AuthProvider = ({ children }) => {
                     throw errorObject;
                 }
             }
-            // throw new Error
         }
     }
     async function createUser(data) {
@@ -135,7 +134,7 @@ const AuthProvider = ({ children }) => {
         } else {
             setLoading(false);
         }
-    });
+    }, []);
     useEffect(() => {
         if (error !== null) {
             toast(error);
@@ -150,6 +149,7 @@ const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
+
 AuthProvider.propTypes = {
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.node),
